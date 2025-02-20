@@ -3,11 +3,8 @@
 **BackTrader** is a Python framework for backtesting trading strategies. It provides a flexible and efficient environment for traders, quants, and researchers to simulate and evaluate trading algorithms using historical market data.  
 
 ## Features  
-- ⚡ **Fast Execution** – Optimized for large datasets and complex strategies.  
-- 📊 **Strategy Flexibility** – Supports custom indicators, multi-asset trading, and different timeframes.  
-- 📈 **Performance Metrics** – Includes Sharpe ratio, drawdown analysis, and trade statistics.  
-- 🔌 **Plug-and-Play Data Integration** – Works with CSV, databases, and APIs.  
-- 🏆 **Live Trading Support** – Seamless transition from backtesting to execution.  
+- **Fast Execution** – Optimized for large datasets and complex strategies.  
+- **Performance Metrics** – Includes Sharpe ratio, drawdown analysis, and trade statistics.  
 
 ## Installation  
 Create a new Conda environment and install BackTrader:  
