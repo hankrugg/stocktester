@@ -4,7 +4,12 @@ This class is designed to strictly prohibit any form of data leakage so the user
 the results of their analysis.
 """
 
+from dataclasses import dataclass
+from datetime import datetime
 
+
+@dataclass
 class DataLoader:
-    def __init__(self):
-        pass
+    ticker: str
+    start_date: datetime.date
+    end_date: datetime.date
