@@ -40,7 +40,7 @@ class MarketData(Iterator[MarketDataPoint]):
         if self.current_index >= len(self.data):
             raise StopIteration
 
-        row = self.data[self.current_index]
+        row = self.data.iloc[self.current_index]
         self.current_index += 1
         return MarketDataPoint(
             timestamp=row['timestamp'],
