@@ -29,6 +29,7 @@ class MarketData(Iterator[MarketDataPoint]):
     def __init__(self, data: pd.DataFrame):
         """Initialize with dataframe that requires timestamp, open, high, low, close, and volume."""
         self.data = data.sort_values(by='timestamp')
+        self.data = self.validate_data(self.data)
         self.current_index = 0
 
     def __iter__(self):
@@ -50,4 +51,13 @@ class MarketData(Iterator[MarketDataPoint]):
             close=row['close'],
             volume=row['volume']
         )
+
+    @staticmethod
+    def validate_data(data: pd.DataFrame) -> pd.DataFrame:
+        """Validates the data"""
+        if data.empty:
+            raise ValueError('Data is empty')
+
+        return data
+
 
