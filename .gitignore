@@ -1,2 +1,4 @@
 .idea/
 /docs/UML.txt
+*__pycache__
+*.ipynb_checkpoints
