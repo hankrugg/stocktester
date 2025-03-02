@@ -28,8 +28,7 @@ class MarketData(Iterator[MarketDataPoint]):
 
     def __init__(self, data: pd.DataFrame):
         """Initialize with dataframe that requires timestamp, open, high, low, close, and volume."""
-        self.data = data.sort_values(by='timestamp')
-        self.data = self.validate_data(self.data)
+        self.data = self.validate_data(data.sort_values(by='timestamp'))
         self.current_index = 0
 
     def __iter__(self):
@@ -57,6 +56,15 @@ class MarketData(Iterator[MarketDataPoint]):
         """Validates the data"""
         if data.empty:
             raise ValueError('Data is empty')
+
+        valid_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
+        for column in valid_columns:
+            if column not in data.columns:
+                raise ValueError('Column "{}" is missing'.format(column))
+
+        data = data[valid_columns]
+
+        data = data.ffill()
 
         return data
 
