@@ -60,13 +60,18 @@ class MarketData(Iterator[MarketDataPoint]):
         valid_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
         for column in valid_columns:
             if column not in data.columns:
-                raise ValueError('Column "{}" is missing'.format(column))
+                raise KeyError('Column "{}" is missing'.format(column))
 
-        data = data[valid_columns]
+        data = data[valid_columns]  # take only the columns that we want if there were other columns included
 
-        data = data.ffill()
+        data = data.ffill()  # if there are data missing, fill it with the previous data
 
-        data = cast_types(data)
+        data = data.dropna()   # all the data should be filled, but there is no way to forward fill the
+        # first row, this would drop the first row
+
+        data.reset_index(drop=True, inplace=True)  # if the first row was dropped, the index needs to be reset
+
+        data = cast_types(data)  # change the types of the data to what we expect
 
         return data
 
