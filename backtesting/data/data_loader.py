@@ -28,8 +28,7 @@ class MarketData(Iterator[MarketDataPoint]):
 
     def __init__(self, data: pd.DataFrame):
         """Initialize with dataframe that requires timestamp, open, high, low, close, and volume."""
-        self.data = data.sort_values(by='timestamp')
-        self.data = self.validate_data(self.data)
+        self.data = self.validate_data(data.sort_values(by='timestamp'))
         self.current_index = 0
 
     def __iter__(self):
@@ -58,6 +57,31 @@ class MarketData(Iterator[MarketDataPoint]):
         if data.empty:
             raise ValueError('Data is empty')
 
+        valid_columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume']
+        for column in valid_columns:
+            if column not in data.columns:
+                raise KeyError('Column "{}" is missing'.format(column))
+
+        data = data[valid_columns]  # take only the columns that we want if there were other columns included
+
+        data = data.ffill()  # if there are data missing, fill it with the previous data
+
+        data = data.dropna()   # all the data should be filled, but there is no way to forward fill the
+        # first row, this would drop the first row
+
+        data.reset_index(drop=True, inplace=True)  # if the first row was dropped, the index needs to be reset
+
+        data = cast_types(data)  # change the types of the data to what we expect
+
         return data
 
 
+def cast_types(data: pd.DataFrame) -> pd.DataFrame:
+    """Casts data as correct types"""
+    data['timestamp'] = pd.to_datetime(data['timestamp'])
+    data['open'] = data['open'].astype(float)
+    data['high'] = data['high'].astype(float)
+    data['low'] = data['low'].astype(float)
+    data['close'] = data['close'].astype(float)
+    data['volume'] = data['volume'].astype(float)
+    return data
