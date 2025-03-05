@@ -28,6 +28,8 @@ class TestMarketData(unittest.TestCase):
 
         self.nan_data = self.valid_data.copy()
         self.nan_data.loc[3, "close"] = None  # Introduce a NaN
+        self.nan_data2 = self.valid_data.copy()
+        self.nan_data2.loc[0, "close"] = None
 
     def test_valid_data(self):
         """Test MarketData loads valid data correctly"""
