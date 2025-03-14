@@ -63,6 +63,27 @@ class TestMarketData(unittest.TestCase):
         with self.assertRaises(StopIteration):
             next(loader)
 
+    def test_data_change(self):
+        """Ensure the iterator data does not change when the dataframe is changed"""
+        loader = MarketData(self.valid_data)
+        self.valid_data.iloc[0] = 0
+        first_point = next(loader)
+        self.assertNotEquals(first_point, 0)
+
+    def test_data_change2(self):
+        """Ensure the iterator data does not change when the dataframe is changed"""
+        test_point = self.valid_data.iloc[0]
+        loader = MarketData(self.valid_data)
+        self.valid_data.iloc[0] = 0
+        first_point = next(loader)
+        self.assertEquals(test_point.timestamp, first_point.timestamp)
+        self.assertEquals(test_point.open, first_point.open)
+        self.assertEquals(test_point.high, first_point.high)
+        self.assertEquals(test_point.low, first_point.low)
+        self.assertEquals(test_point.close, first_point.close)
+        self.assertEquals(test_point.volume, first_point.volume)
+
+
 
 if __name__ == '__main__':
     unittest.main()
