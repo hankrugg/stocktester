@@ -1,6 +1,8 @@
 import unittest
 import sys
 import os
+
+import numpy as np
 import pandas as pd
 from datetime import datetime
 from dotenv import load_dotenv
@@ -62,6 +64,56 @@ class TestMarketData(unittest.TestCase):
         list(loader)  # Exhaust iterator
         with self.assertRaises(StopIteration):
             next(loader)
+
+    def test_data_change(self):
+        """Ensure the iterator data does not change when the dataframe is changed"""
+        loader = MarketData(self.valid_data)
+        self.valid_data.iloc[0] = 0
+        first_point = next(loader)
+        self.assertNotEquals(first_point, 0)
+
+    def test_data_change2(self):
+        """Ensure the iterator data does not change when the dataframe is changed"""
+        test_point = self.valid_data.iloc[0]
+        loader = MarketData(self.valid_data)
+        self.valid_data.iloc[0] = 0
+        first_point = next(loader)
+        self.assertEquals(test_point.timestamp, first_point.timestamp)
+        self.assertEquals(test_point.open, first_point.open)
+        self.assertEquals(test_point.high, first_point.high)
+        self.assertEquals(test_point.low, first_point.low)
+        self.assertEquals(test_point.close, first_point.close)
+        self.assertEquals(test_point.volume, first_point.volume)
+
+    def test_data_change3(self):
+        """Ensure the iterator data does not change when the dataframe is changed"""
+        test_point = self.valid_data.iloc[0]
+        loader = MarketData(self.valid_data)
+        self.valid_data.iloc[0].open = 99999
+        self.valid_data.iloc[0].close = 99999
+        self.valid_data.iloc[0].high = 99999
+        self.valid_data.iloc[0].low = 99999
+        first_point = next(loader)
+        self.assertEquals(test_point.timestamp, first_point.timestamp)
+        self.assertEquals(test_point.open, first_point.open)
+        self.assertEquals(test_point.high, first_point.high)
+        self.assertEquals(test_point.low, first_point.low)
+        self.assertEquals(test_point.close, first_point.close)
+        self.assertEquals(test_point.volume, first_point.volume)
+
+
+    def test_cast_types(self):
+        """Ensure the types are correctly casted"""
+        loader = MarketData(self.valid_data)
+        test_point = next(loader)
+        self.assertEquals(type(test_point), MarketDataPoint)
+        self.assertEquals(type(test_point.open), np.float64)
+        self.assertEquals(type(test_point.high), np.float64)
+        self.assertEquals(type(test_point.low), np.float64)
+        self.assertEquals(type(test_point.close), np.float64)
+        self.assertEquals(type(test_point.volume), np.float64)
+
+
 
 
 if __name__ == '__main__':
