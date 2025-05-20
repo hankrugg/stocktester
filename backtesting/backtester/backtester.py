@@ -4,6 +4,7 @@ This is the class where all the work will be done.
 
 from abc import ABC, abstractmethod
 from typing import List
+from portfolio import Portfolio
 
 class Backtester(ABC):
     def __init__(self, market_data):
