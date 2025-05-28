@@ -1,25 +1,25 @@
-"""
-This is the class where all the work will be done.
-"""
-
 from abc import ABC, abstractmethod
-from typing import List
-from portfolio import Portfolio
+from typing import List, Iterable
+from backtrader.backtesting.portfolio.portfolio import Portfolio
+from backtrader.backtesting.data.data_loader import MarketDataPoint
 
 class Backtester(ABC):
-    def __init__(self, market_data):
+    def __init__(self, market_data: Iterable[MarketDataPoint]):
+        """
+        Accepts an iterable of MarketDataPoint, such as an instance of MarketData.
+        """
         self.market_data = market_data
         self.portfolio_value_history = []
 
     @abstractmethod
-    def make_decision(self, data_point):
+    def make_decision(self, data_point: MarketDataPoint) -> int:
         """
         Must be implemented by the user.
         Returns the number of stocks to buy (>0) or sell (<0).
         """
         pass
 
-    def run_simulation(self):
+    def run_simulation(self) -> List[float]:
         """
         Runs through all market data and simulates trading.
         """
