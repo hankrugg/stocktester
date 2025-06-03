@@ -19,13 +19,27 @@ class Backtester(ABC):
         """
         pass
 
+    def _make_decision_wrapper(self, data_point):
+        """
+        Adds validation to make_decision function
+        """
+        try:
+            self.make_decision(data_point)
+        except:
+            Warning(f"Error in decision for {data_point.timestamp}. Holding position")
+            return 0
+
+
+
     def run_simulation(self) -> List[float]:
         """
         Runs through all market data and simulates trading.
         """
         portfolio = Portfolio()
         for data_point in self.market_data:
-            decision = self.make_decision(data_point)
+            decision = self._make_decision_wrapper(data_point)
+
+            # THIS IS WRONG. DECISION IS BASED ON THE AMOUNT OF LIQUID CASH IN THE PORTFOLIO NOT THE AMOUNT OF STOCKS TO BUY
 
             # Assume simple logic: buy/sell at the current close price
             price = data_point.close
