@@ -45,17 +45,16 @@ class Backtester(ABC):
         for data_point in self.market_data:
             decision = self._make_decision_wrapper(data_point)
 
-            # THIS IS WRONG. DECISION IS BASED ON THE AMOUNT OF LIQUID CASH IN THE PORTFOLIO NOT THE AMOUNT OF STOCKS TO BUY
-
-            # Assume simple logic: buy/sell at the current close price
             price = data_point.close
-            if decision > 0:
-                cost = decision * price
-                if portfolio.liquidity >= cost:
-                    portfolio.stock_count += decision
-                    portfolio.liquidity -= cost
-            elif decision < 0:
-                sell_amount = min(-decision, portfolio.stock_count)
+            if decision > 0: # buy
+                cost = decision * portfolio.liquidity
+                stock_count = cost / price
+                portfolio.stock_count += stock_count
+                portfolio.liquidity -= cost
+
+            elif decision < 0: # sell
+                pct_to_sell = abs(decision)
+                sell_amount = portfolio.stock_count * pct_to_sell # will be positinve since decision is positive now
                 portfolio.stock_count -= sell_amount
                 portfolio.liquidity += sell_amount * price
 
