@@ -54,7 +54,7 @@ class Backtester(ABC):
 
             elif decision < 0: # sell
                 pct_to_sell = abs(decision)
-                sell_amount = portfolio.stock_count * pct_to_sell # will be positinve since decision is positive now
+                sell_amount = portfolio.stock_count * pct_to_sel # will be positinve since decision is positive now
                 portfolio.stock_count -= sell_amount
                 portfolio.liquidity += sell_amount * price
 
