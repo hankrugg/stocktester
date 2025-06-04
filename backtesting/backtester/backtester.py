@@ -10,6 +10,7 @@ class Backtester(ABC):
         """
         self.market_data = market_data
         self.portfolio_value_history = []
+        self.past_data = []
 
     @abstractmethod
     def make_decision(self, data_point: MarketDataPoint) -> int:
@@ -24,9 +25,10 @@ class Backtester(ABC):
         Adds validation to make_decision function
         """
         try:
-            self.make_decision(data_point)
-        except:
-            Warning(f"Error in decision for {data_point.timestamp}. Holding position")
+            decision = self.make_decision(data_point)
+            return decision
+        except Exception as e:
+            print(f"Error in decision for {data_point.timestamp}. {e}. Holding position.")
             return 0
 
 
@@ -56,5 +58,6 @@ class Backtester(ABC):
             # Record portfolio value
             current_value = portfolio.liquidity + portfolio.stock_count * price
             self.portfolio_value_history.append(current_value)
+            self.past_data.append(data_point)
 
         return self.portfolio_value_history
