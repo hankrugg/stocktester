@@ -11,6 +11,9 @@ class Backtester(ABC):
         self.market_data = market_data
         self.portfolio_value_history = []
         self.past_data = []
+        self.MAX_BUY_PCT = 1
+        self.MAX_SELL_PCT = -1
+
 
     @abstractmethod
     def make_decision(self, data_point: MarketDataPoint) -> int:
@@ -26,6 +29,7 @@ class Backtester(ABC):
         """
         try:
             decision = self.make_decision(data_point)
+            decision = max(min(self.MAX_BUY_PCT, decision), self.MAX_SELL_PCT) # clip range between -1,1
             return decision
         except Exception as e:
             print(f"Error in decision for {data_point.timestamp}. {e}. Holding position.")
