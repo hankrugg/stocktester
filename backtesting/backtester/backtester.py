@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Iterable
-from backtrader.backtesting.portfolio.portfolio import Portfolio
-from backtrader.backtesting.data.data_loader import MarketDataPoint
+from backtesting.portfolio.portfolio import Portfolio
+from backtesting.data.data_loader import MarketDataPoint
 
 class Backtester(ABC):
     def __init__(self, market_data: Iterable[MarketDataPoint]):
@@ -54,7 +54,7 @@ class Backtester(ABC):
 
             elif decision < 0: # sell
                 pct_to_sell = abs(decision)
-                sell_amount = portfolio.stock_count * pct_to_sel # will be positinve since decision is positive now
+                sell_amount = portfolio.stock_count * pct_to_sell # will be positinve since decision is positive now
                 portfolio.stock_count -= sell_amount
                 portfolio.liquidity += sell_amount * price
 
