@@ -1,4 +1,10 @@
 import unittest
+import sys
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+sys.path.append(os.getenv('local_path'))
 from backtesting.portfolio.portfolio import Portfolio
 
 class TestPortfolio(unittest.TestCase):
