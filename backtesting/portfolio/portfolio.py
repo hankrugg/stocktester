@@ -5,8 +5,8 @@ Created on Mon Mar 31 2024
 from dataclasses import dataclass, field
 
 @dataclass
-class Portfolio:
-    initial_investment: float = 25000
+class Portfolio():
+    initial_investment: float = 25000.0
     _liquidity: float = field(init=False)
     _stock_count: int = field(init=False)
 
