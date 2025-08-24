@@ -2,5 +2,6 @@
 /docs/UML.txt
 .env
 *__pycache__
+.pytest_cache
 *.ipynb_checkpoints
 
