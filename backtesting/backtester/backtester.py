@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Iterable
-from backtrader.backtesting.portfolio.portfolio import Portfolio
-from backtrader.backtesting.data.data_loader import MarketDataPoint
+from backtesting.portfolio.portfolio import Portfolio
+from backtesting.portfolio.broker import Broker
+from backtesting.data.data_loader import MarketDataPoint
 
 class Backtester(ABC):
     def __init__(self, market_data: Iterable[MarketDataPoint]):
@@ -37,26 +38,21 @@ class Backtester(ABC):
 
 
 
-    def run_simulation(self) -> List[float]:
+    def run_simulation(self, initial_investment) -> List[float]:
         """
         Runs through all market data and simulates trading.
         """
-        portfolio = Portfolio()
+        portfolio = Portfolio(initial_investment=initial_investment)
+        broker = Broker(portfolio)
         for data_point in self.market_data:
             decision = self._make_decision_wrapper(data_point)
 
             price = data_point.close
             if decision > 0: # buy
-                cost = decision * portfolio.liquidity
-                stock_count = cost / price
-                portfolio.stock_count += stock_count
-                portfolio.liquidity -= cost
-
+                broker.buy(portfolio_pct=decision, price=price)
+ 
             elif decision < 0: # sell
-                pct_to_sell = abs(decision)
-                sell_amount = portfolio.stock_count * pct_to_sell # will be positinve since decision is positive now
-                portfolio.stock_count -= sell_amount
-                portfolio.liquidity += sell_amount * price
+                broker.sell(portfolio_pct=decision, price=price)
 
             # Record portfolio value
             current_value = portfolio.liquidity + portfolio.stock_count * price
